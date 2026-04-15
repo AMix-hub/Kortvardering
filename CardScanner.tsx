@@ -133,11 +133,11 @@ export default function CardScanner() {
   return (
     <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-gradient-to-br from-[#14081f] via-[#1d0a2a] to-[#09040f] p-6 text-fuchsia-50 shadow-[0_0_80px_rgba(236,72,153,0.18)]">
       <div className="pointer-events-none absolute -left-16 -top-24 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 top-24 h-64 w-64 motion-safe:animate-pulse rounded-full bg-pink-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 top-24 h-64 w-64 rounded-full bg-pink-400/20 blur-3xl motion-safe:animate-pulse" />
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-44 w-72 -translate-x-1/2 rounded-full bg-rose-500/20 blur-3xl" />
 
       <div className="mb-8">
-        <span className="inline-block rounded-full border border-fuchsia-300/30 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-fuchsia-200 shadow-[0_0_20px_rgba(244,114,182,0.35)]">
+        <span className="inline-block rounded-full border border-fuchsia-300/30 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-fuchsia-200 shadow-[0_0_20px_rgba(244,114,182,0.35)]">
           Jupiter Luxury
         </span>
         <h1 className="mt-3 bg-gradient-to-r from-fuchsia-100 via-pink-100 to-rose-200 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
@@ -167,7 +167,7 @@ export default function CardScanner() {
         <button
           onClick={onAnalyze}
           disabled={loading || !file}
-          className="mt-6 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-rose-500 px-6 py-2 font-semibold text-slate-950 shadow-[0_0_30px_rgba(236,72,153,0.4)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_45px_rgba(236,72,153,0.65)] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-6 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-rose-500 px-6 py-2 font-semibold text-slate-950 shadow-[0_0_30px_rgba(236,72,153,0.4)] transition-all duration-300 motion-safe:hover:scale-[1.02] hover:shadow-[0_0_45px_rgba(236,72,153,0.65)] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Analyzing..." : "Analyze Card"}
         </button>
@@ -186,7 +186,7 @@ export default function CardScanner() {
                   <img
                     src={safePreviewUrl}
                     alt="Uploaded card"
-                    className="rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 hover:scale-[1.01]"
+                    className="rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 motion-safe:hover:scale-[1.01]"
                   />
                 ) : null}
               </div>
@@ -196,7 +196,7 @@ export default function CardScanner() {
                   <img
                     src={safeOfficialImageUrl}
                     alt={result.name}
-                    className="rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 hover:scale-[1.01]"
+                    className="rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 motion-safe:hover:scale-[1.01]"
                   />
                 ) : (
                   <div className="rounded-xl border border-pink-300/20 bg-white/[0.03] p-4 text-sm text-fuchsia-100/70">
