@@ -24,6 +24,15 @@ type AnalyzeCardResponse = {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
+function safeImageUrl(url: string, allowedProtocols: string[]): string | null {
+  try {
+    const parsed = new URL(url);
+    return allowedProtocols.includes(parsed.protocol) ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function CardScanner() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -32,6 +41,22 @@ export default function CardScanner() {
   const [result, setResult] = useState<AnalyzeCardResponse | null>(null);
 
   const hasResult = useMemo(() => Boolean(result), [result]);
+  const safePreviewUrl = useMemo(() => {
+    if (!previewUrl) return null;
+    return /^data:image\/(jpeg|png|webp);base64,/i.test(previewUrl) ? previewUrl : null;
+  }, [previewUrl]);
+  const safeOfficialImageUrl = useMemo(
+    () => (result?.official_card_data.image ? safeImageUrl(result.official_card_data.image, ["https:", "http:"]) : null),
+    [result],
+  );
+  const formatPrice = (value: number | null, currency: string) => {
+    if (value === null) return "N/A";
+    try {
+      return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(value);
+    } catch {
+      return `${value} ${currency}`;
+    }
+  };
 
   const onSelectFile = (selectedFile: File | null) => {
     setFile(selectedFile);
@@ -43,8 +68,20 @@ export default function CardScanner() {
       return;
     }
 
-    const nextUrl = URL.createObjectURL(selectedFile);
-    setPreviewUrl(nextUrl);
+    if (!["image/jpeg", "image/png", "image/webp"].includes(selectedFile.type)) {
+      setFile(null);
+      setPreviewUrl("");
+      setError("Only JPEG, PNG, and WEBP images are supported.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setPreviewUrl(reader.result);
+      }
+    };
+    reader.readAsDataURL(selectedFile);
   };
 
   const onAnalyze = async () => {
@@ -134,12 +171,12 @@ export default function CardScanner() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="mb-2 text-sm text-slate-300">Uploaded Image</p>
-                {previewUrl ? <img src={previewUrl} alt="Uploaded card" className="rounded-lg" /> : null}
+                {safePreviewUrl ? <img src={safePreviewUrl} alt="Uploaded card" className="rounded-lg" /> : null}
               </div>
               <div>
                 <p className="mb-2 text-sm text-slate-300">Official Card</p>
-                {result.official_card_data.image ? (
-                  <img src={result.official_card_data.image} alt={result.name} className="rounded-lg" />
+                {safeOfficialImageUrl ? (
+                  <img src={safeOfficialImageUrl} alt={result.name} className="rounded-lg" />
                 ) : (
                   <div className="rounded-lg bg-slate-800 p-4 text-sm text-slate-300">No official image found</div>
                 )}
@@ -157,7 +194,7 @@ export default function CardScanner() {
               </span>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-300">
                 {result.condition_notes.map((note, index) => (
-                  <li key={`${note}-${index}`}>{note}</li>
+                  <li key={index}>{note}</li>
                 ))}
               </ul>
             </div>
@@ -174,9 +211,9 @@ export default function CardScanner() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>${result.prices.low ?? "N/A"}</td>
-                    <td>${result.prices.average ?? "N/A"}</td>
-                    <td>${result.prices.high ?? "N/A"}</td>
+                    <td>{formatPrice(result.prices.low, result.prices.currency)}</td>
+                    <td>{formatPrice(result.prices.average, result.prices.currency)}</td>
+                    <td>{formatPrice(result.prices.high, result.prices.currency)}</td>
                   </tr>
                 </tbody>
               </table>

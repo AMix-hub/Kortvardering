@@ -16,8 +16,16 @@ except Exception:  # pragma: no cover
 
 POKEMON_TCG_API_URL = "https://api.pokemontcg.io/v2/cards"
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+ALLOWED_CONDITIONS = (
+    "Mint",
+    "Near Mint",
+    "Lightly Played",
+    "Moderately Played",
+    "Heavily Played",
+    "Damaged",
+)
 
-app = FastAPI(title="Pokemon Card Valuation Service", version="1.0.0")
+app = FastAPI(title="Pokémon Card Valuation Service", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -89,9 +97,9 @@ def analyze_card_image_with_vision(image_bytes: bytes, filename: str) -> VisionA
     client = _openai_client()
 
     prompt = (
-        "You are analyzing a Pokemon trading card image. "
+        "You are analyzing a Pokémon trading card image. "
         "Return only valid JSON with keys: name, set, number, detected_condition, condition_notes, image_quality_ok. "
-        "Condition should be one of: Mint, Near Mint, Lightly Played, Moderately Played, Heavily Played, Damaged. "
+        f"Condition should be one of: {', '.join(ALLOWED_CONDITIONS)}. "
         "condition_notes must include observations about whitening, scratches, and corner wear. "
         "If image is too blurry or unreadable, set image_quality_ok=false and explain in condition_notes."
     )
@@ -102,7 +110,7 @@ def analyze_card_image_with_vision(image_bytes: bytes, filename: str) -> VisionA
         messages=[
             {
                 "role": "system",
-                "content": "You are a precise Pokemon card grading and recognition assistant.",
+                "content": "You are a precise Pokémon card grading and recognition assistant.",
             },
             {
                 "role": "user",
@@ -125,7 +133,15 @@ def analyze_card_image_with_vision(image_bytes: bytes, filename: str) -> VisionA
         raise HTTPException(status_code=502, detail="Vision model returned invalid JSON") from exc
 
     try:
-        return VisionAnalysisResult(**parsed)
+        result = VisionAnalysisResult(**parsed)
+        if result.detected_condition not in ALLOWED_CONDITIONS:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Unsupported detected condition '{result.detected_condition}' from vision analysis",
+            )
+        return result
+    except HTTPException:
+        raise
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Vision response missing required fields: {exc}") from exc
 
