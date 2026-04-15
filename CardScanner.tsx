@@ -23,6 +23,11 @@ type AnalyzeCardResponse = {
 };
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const PAGE_TITLES: Record<"landing" | "valuation" | "sales", string> = {
+  landing: "Pokémonkort",
+  valuation: "Värdering av kort",
+  sales: "Försäljning",
+};
 
 function safeImageUrl(url: string, allowedProtocols: string[]): string | null {
   try {
@@ -40,6 +45,7 @@ export default function CardScanner() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [result, setResult] = useState<AnalyzeCardResponse | null>(null);
+  const pageTitle = PAGE_TITLES[activeSection];
 
   const hasResult = useMemo(() => Boolean(result), [result]);
   const safePreviewUrl = useMemo(() => {
@@ -139,14 +145,15 @@ export default function CardScanner() {
 
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="mt-3 text-3xl font-bold text-fuchsia-50 drop-shadow-[0_0_18px_rgba(244,114,182,0.2)] md:text-4xl">Kortvärdering</h1>
+          <h1 className="mt-3 text-3xl font-bold text-fuchsia-50 drop-shadow-[0_0_18px_rgba(244,114,182,0.2)] md:text-4xl">{pageTitle}</h1>
           {activeSection === "landing" && <p className="mt-2 text-fuchsia-100/80">Välj vad du vill göra nedan.</p>}
-          {activeSection === "valuation" && <p className="mt-2 text-fuchsia-100/80">Värdering av kort</p>}
-          {activeSection === "sales" && <p className="mt-2 text-fuchsia-100/80">Försäljning</p>}
+          {activeSection === "valuation" && <p className="mt-2 text-fuchsia-100/80">Ladda upp ett kort för att identifiera och värdera det.</p>}
+          {activeSection === "sales" && <p className="mt-2 text-fuchsia-100/80">Sätt ut dina kort till försäljning.</p>}
         </div>
         {activeSection !== "landing" && (
           <button
             onClick={() => setActiveSection("landing")}
+            aria-label="Till landningssidan"
             className="rounded-xl border border-pink-300/40 bg-white/[0.06] px-4 py-2 text-sm font-medium text-pink-100 transition-colors hover:bg-white/[0.12]"
           >
             Till landningssidan
@@ -158,6 +165,7 @@ export default function CardScanner() {
         <div className="grid gap-4 sm:grid-cols-2">
           <button
             onClick={() => setActiveSection("valuation")}
+            aria-label="Gå till värdering av kort"
             className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-6 text-left shadow-[0_0_35px_rgba(236,72,153,0.16)] transition-all duration-300 hover:shadow-[0_0_55px_rgba(236,72,153,0.3)]"
           >
             <h2 className="text-xl font-semibold">Värdering av kort</h2>
@@ -165,10 +173,11 @@ export default function CardScanner() {
           </button>
           <button
             onClick={() => setActiveSection("sales")}
+            aria-label="Gå till försäljning"
             className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-6 text-left shadow-[0_0_35px_rgba(236,72,153,0.16)] transition-all duration-300 hover:shadow-[0_0_55px_rgba(236,72,153,0.3)]"
           >
             <h2 className="text-xl font-semibold">Försäljning</h2>
-            <p className="mt-2 text-sm text-fuchsia-100/80">Hantera försäljningsdelen av sidan.</p>
+            <p className="mt-2 text-sm text-fuchsia-100/80">Sätt ut dina kort till försäljning.</p>
           </button>
         </div>
       )}
@@ -188,15 +197,15 @@ export default function CardScanner() {
               onChange={(event) => onSelectFile(event.target.files?.[0] ?? null)}
             />
             <label htmlFor="card-upload" className="cursor-pointer font-medium text-pink-100 transition-colors hover:text-pink-50">
-              Drag & Drop card image here, or click to upload
+              Klicka för att välja fil eller dra och släpp kortbild här
             </label>
-            {file && <p className="mt-3 text-sm text-fuchsia-100/70">Selected: {file.name}</p>}
+            {file && <p className="mt-3 text-sm text-fuchsia-100/70">Vald: {file.name}</p>}
             <button
               onClick={onAnalyze}
               disabled={loading || !file}
               className="mt-6 w-full rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-rose-500 px-6 py-2 font-semibold text-slate-950 shadow-[0_0_30px_rgba(236,72,153,0.4)] transition-all duration-300 motion-safe:hover:scale-[1.02] hover:shadow-[0_0_45px_rgba(236,72,153,0.65)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
-              {loading ? "Analyzing..." : "Analyze Card"}
+              {loading ? "Analyserar..." : "Analysera kort"}
             </button>
           </div>
 
@@ -205,10 +214,10 @@ export default function CardScanner() {
           {hasResult && result && (
             <div className="mt-8 grid gap-6 lg:grid-cols-2">
               <div className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-4 shadow-[0_0_35px_rgba(236,72,153,0.16)] backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_55px_rgba(236,72,153,0.3)]">
-                <h2 className="mb-3 text-xl font-semibold">Card Comparison</h2>
+                <h2 className="mb-3 text-xl font-semibold">Kortjämförelse</h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <p className="mb-2 text-sm text-fuchsia-100/70">Uploaded Image</p>
+                    <p className="mb-2 text-sm text-fuchsia-100/70">Uppladdad bild</p>
                     {safePreviewUrl ? (
                       <img
                         src={safePreviewUrl}
@@ -218,7 +227,7 @@ export default function CardScanner() {
                     ) : null}
                   </div>
                   <div>
-                    <p className="mb-2 text-sm text-fuchsia-100/70">Official Card</p>
+                    <p className="mb-2 text-sm text-fuchsia-100/70">Officiellt kort</p>
                     {safeOfficialImageUrl ? (
                       <img
                         src={safeOfficialImageUrl}
@@ -227,7 +236,7 @@ export default function CardScanner() {
                       />
                     ) : (
                       <div className="rounded-xl border border-pink-300/20 bg-white/[0.03] p-4 text-sm text-fuchsia-100/70">
-                        No official image found
+                        Ingen officiell bild hittades
                       </div>
                     )}
                   </div>
@@ -236,11 +245,11 @@ export default function CardScanner() {
 
               <div className="space-y-6">
                 <div className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-4 shadow-[0_0_35px_rgba(236,72,153,0.16)] backdrop-blur-md">
-                  <h2 className="mb-2 text-xl font-semibold">Identified Card</h2>
+                  <h2 className="mb-2 text-xl font-semibold">Identifierat kort</h2>
                   <p>{result.name}</p>
                   <p className="text-fuchsia-100/70">{result.set} • #{result.number}</p>
                   <span className="mt-3 inline-block rounded-full border border-pink-200/30 bg-pink-500/20 px-3 py-1 text-sm font-medium text-pink-100 shadow-[0_0_20px_rgba(244,114,182,0.35)]">
-                    Condition Report: {result.detected_condition}
+                    Konditionsrapport: {result.detected_condition}
                   </span>
                   <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-fuchsia-100/80">
                     {result.condition_notes.map((note, index) => (
@@ -250,14 +259,14 @@ export default function CardScanner() {
                 </div>
 
                 <div className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-4 shadow-[0_0_35px_rgba(236,72,153,0.16)] backdrop-blur-md">
-                  <h2 className="mb-3 text-xl font-semibold">Market Pricing ({result.prices.currency})</h2>
+                  <h2 className="mb-3 text-xl font-semibold">Marknadspriser ({result.prices.currency})</h2>
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[18rem] table-auto text-left">
                       <thead>
                         <tr className="text-fuchsia-100/70">
-                          <th className="pb-2">Low</th>
-                          <th className="pb-2">Average</th>
-                          <th className="pb-2">High</th>
+                          <th className="pb-2">Låg</th>
+                          <th className="pb-2">Medel</th>
+                          <th className="pb-2">Hög</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -279,7 +288,7 @@ export default function CardScanner() {
       {activeSection === "sales" && (
         <div className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-6 shadow-[0_0_35px_rgba(236,72,153,0.16)] backdrop-blur-md">
           <h2 className="text-2xl font-semibold">Försäljning</h2>
-          <p className="mt-2 text-fuchsia-100/80">Denna del är redo att fyllas med funktioner för försäljning.</p>
+          <p className="mt-2 text-fuchsia-100/80">Här kan du sätta ut dina kort till försäljning.</p>
         </div>
       )}
     </div>
