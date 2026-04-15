@@ -137,10 +137,10 @@ export default function CardScanner() {
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-44 w-72 -translate-x-1/2 rounded-full bg-rose-500/20 blur-3xl" />
 
       <div className="mb-8">
-        <span className="inline-block rounded-full border border-fuchsia-300/30 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-fuchsia-200 shadow-[0_0_20px_rgba(244,114,182,0.35)]">
+        <span className="inline-block rounded-full border border-fuchsia-300/30 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.05em] text-fuchsia-200 shadow-[0_0_20px_rgba(244,114,182,0.35)]">
           Jupiter Luxury
         </span>
-        <h1 className="mt-3 bg-gradient-to-r from-fuchsia-100 via-pink-100 to-rose-200 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
+        <h1 className="mt-3 text-3xl font-bold text-fuchsia-50 drop-shadow-[0_0_18px_rgba(244,114,182,0.2)] md:text-4xl">
           Pokémon Card Valuation
         </h1>
         <p className="mt-2 text-fuchsia-100/80">
