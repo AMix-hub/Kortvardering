@@ -97,7 +97,8 @@ const TRANSLATIONS = {
   },
 } satisfies Record<Lang, object>;
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+// Empty string means same-origin; in dev the Vite proxy forwards /analyze-card to localhost:8000.
+const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? "";
 
 function safeImageUrl(url: string, allowedProtocols: string[]): string | null {
   try {
