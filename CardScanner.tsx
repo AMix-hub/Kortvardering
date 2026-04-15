@@ -131,15 +131,12 @@ export default function CardScanner() {
   };
 
   return (
-    <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-gradient-to-br from-[#14081f] via-[#1d0a2a] to-[#09040f] p-6 text-fuchsia-50 shadow-[0_0_80px_rgba(236,72,153,0.18)]">
+    <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-gradient-to-br from-[#14081f] via-[#1d0a2a] to-[#09040f] p-4 text-fuchsia-50 shadow-[0_0_80px_rgba(236,72,153,0.18)] sm:p-6">
       <div className="pointer-events-none absolute -left-16 -top-24 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 top-24 h-64 w-64 rounded-full bg-pink-400/20 blur-3xl motion-safe:animate-pulse" />
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-44 w-72 -translate-x-1/2 rounded-full bg-rose-500/20 blur-3xl" />
 
       <div className="mb-8">
-        <span className="inline-block rounded-full border border-fuchsia-300/30 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.05em] text-fuchsia-200 shadow-[0_0_20px_rgba(244,114,182,0.35)]">
-          Jupiter Luxury
-        </span>
         <h1 className="mt-3 text-3xl font-bold text-fuchsia-50 drop-shadow-[0_0_18px_rgba(244,114,182,0.2)] md:text-4xl">
           Pokémon Card Valuation
         </h1>
@@ -151,7 +148,7 @@ export default function CardScanner() {
       <div
         onDragOver={(event) => event.preventDefault()}
         onDrop={onDrop}
-        className="relative rounded-2xl border-2 border-dashed border-pink-300/70 bg-white/[0.04] p-8 text-center shadow-[inset_0_0_40px_rgba(236,72,153,0.08),0_0_35px_rgba(217,70,239,0.15)] backdrop-blur-md transition-all duration-300 hover:border-pink-200 hover:shadow-[inset_0_0_50px_rgba(236,72,153,0.14),0_0_45px_rgba(217,70,239,0.3)]"
+        className="relative rounded-2xl border-2 border-dashed border-pink-300/70 bg-white/[0.04] p-5 text-center shadow-[inset_0_0_40px_rgba(236,72,153,0.08),0_0_35px_rgba(217,70,239,0.15)] backdrop-blur-md transition-all duration-300 hover:border-pink-200 hover:shadow-[inset_0_0_50px_rgba(236,72,153,0.14),0_0_45px_rgba(217,70,239,0.3)] sm:p-8"
       >
         <input
           id="card-upload"
@@ -167,7 +164,7 @@ export default function CardScanner() {
         <button
           onClick={onAnalyze}
           disabled={loading || !file}
-          className="mt-6 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-rose-500 px-6 py-2 font-semibold text-slate-950 shadow-[0_0_30px_rgba(236,72,153,0.4)] transition-all duration-300 motion-safe:hover:scale-[1.02] hover:shadow-[0_0_45px_rgba(236,72,153,0.65)] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-6 w-full rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-rose-500 px-6 py-2 font-semibold text-slate-950 shadow-[0_0_30px_rgba(236,72,153,0.4)] transition-all duration-300 motion-safe:hover:scale-[1.02] hover:shadow-[0_0_45px_rgba(236,72,153,0.65)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {loading ? "Analyzing..." : "Analyze Card"}
         </button>
@@ -179,14 +176,14 @@ export default function CardScanner() {
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-4 shadow-[0_0_35px_rgba(236,72,153,0.16)] backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_55px_rgba(236,72,153,0.3)]">
             <h2 className="mb-3 text-xl font-semibold">Card Comparison</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <p className="mb-2 text-sm text-fuchsia-100/70">Uploaded Image</p>
                 {safePreviewUrl ? (
                   <img
                     src={safePreviewUrl}
                     alt="Uploaded card"
-                    className="rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 motion-safe:hover:scale-[1.01]"
+                    className="h-auto w-full rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 motion-safe:hover:scale-[1.01]"
                   />
                 ) : null}
               </div>
@@ -196,7 +193,7 @@ export default function CardScanner() {
                   <img
                     src={safeOfficialImageUrl}
                     alt={result.name}
-                    className="rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 motion-safe:hover:scale-[1.01]"
+                    className="h-auto w-full rounded-xl border border-pink-300/20 shadow-[0_0_25px_rgba(236,72,153,0.2)] transition-transform duration-300 motion-safe:hover:scale-[1.01]"
                   />
                 ) : (
                   <div className="rounded-xl border border-pink-300/20 bg-white/[0.03] p-4 text-sm text-fuchsia-100/70">
@@ -224,22 +221,24 @@ export default function CardScanner() {
 
             <div className="rounded-2xl border border-fuchsia-300/20 bg-white/[0.05] p-4 shadow-[0_0_35px_rgba(236,72,153,0.16)] backdrop-blur-md">
               <h2 className="mb-3 text-xl font-semibold">Market Pricing ({result.prices.currency})</h2>
-              <table className="w-full table-auto text-left">
-                <thead>
-                  <tr className="text-fuchsia-100/70">
-                    <th className="pb-2">Low</th>
-                    <th className="pb-2">Average</th>
-                    <th className="pb-2">High</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{formatPrice(result.prices.low, result.prices.currency)}</td>
-                    <td>{formatPrice(result.prices.average, result.prices.currency)}</td>
-                    <td>{formatPrice(result.prices.high, result.prices.currency)}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[18rem] table-auto text-left">
+                  <thead>
+                    <tr className="text-fuchsia-100/70">
+                      <th className="pb-2">Low</th>
+                      <th className="pb-2">Average</th>
+                      <th className="pb-2">High</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{formatPrice(result.prices.low, result.prices.currency)}</td>
+                      <td>{formatPrice(result.prices.average, result.prices.currency)}</td>
+                      <td>{formatPrice(result.prices.high, result.prices.currency)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
